@@ -46,4 +46,30 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+    // Thêm method deleteAccount
+    public function deleteAccount(Request $request)
+    {
+        try {
+            $user = $request->user();
+            
+            // Xóa các dữ liệu liên quan
+            $user->carts()->delete();
+            $user->orders()->delete();
+            
+            // Xóa tài khoản
+            $user->tokens()->delete(); // Xóa tokens
+            $user->delete();
+
+            return response()->json([
+                'message' => 'Tài khoản đã được xóa thành công'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Không thể xóa tài khoản',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
